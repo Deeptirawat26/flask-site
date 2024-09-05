@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Page</title>
+    <style>
+        body {
+            background-color: #fce4ec;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+        }
+
+        .about {
+            flex: 1;
+            text-align: left;
+            margin-right: 2rem;
+        }
+
+        .description {
+            flex: 1;
+            text-align: right;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+    </div>
+    <div class="container">
+        <div class="about">
+            <h1>About</h1>
+        </div>
+        <div class="description">
+            <p>This is the about page of my Flask site. Stay updated for more!</p>
+        </div>
+    </div>
+</body>
+</html>
