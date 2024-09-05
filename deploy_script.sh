@@ -1,4 +1,4 @@
 #!/bin/bash
-cd /home/deeptirawat26/flask-app
+cd /home/ec2-user/flask-app
 pip3 install -r requirements.txt
 python3 app.py

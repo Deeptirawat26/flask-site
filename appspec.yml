@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/deeptirawat26/flask-app
+    destination: /home/ec2-user/flask-app
 hooks:
   AfterInstall:
     - location: deploy_script.sh
       timeout: 300
-      runas: deeptirawat26
+      runas: ec2-user
