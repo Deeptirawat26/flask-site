@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/flask-app
+    destination: /home/deeptirawat26/flask-app
 hooks:
   AfterInstall:
     - location: deploy_script.sh
