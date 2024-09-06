@@ -5,7 +5,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Install the required packages
                     sh 'pip install -r requirements.txt'
                 }
             }
@@ -13,7 +12,6 @@ pipeline {
         stage('Package') {
             steps {
                 script {
-                    // Package the Flask app into a zip file
                     sh 'zip -r flask-app.zip .'
                 }
             }
@@ -21,7 +19,6 @@ pipeline {
         stage('Upload to S3') {
             steps {
                 script {
-                    // Upload the zip file to S3
                     sh 'aws s3 cp flask-app.zip s3://flask-app-deploy-bucket/'
                 }
             }
