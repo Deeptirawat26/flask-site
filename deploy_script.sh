@@ -1,4 +1,3 @@
 #!/bin/bash
-cd /home/ec2-user/flask-app
-pip3 install -r requirements.txt
-python3 app.py
+cd /home/ec2-user/flask-site
+python3 -m flask run --host=0.0.0.0
