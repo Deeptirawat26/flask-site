@@ -4,14 +4,36 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'pip install -r requirements.txt'
+                script {
+                    // Install the required packages
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
+        stage('Package') {
+            steps {
+                script {
+                    // Package the Flask app into a zip file
+                    sh 'zip -r flask-app.zip .'
+                }
+            }
+        }
+        stage('Upload to S3') {
+            steps {
+                script {
+                    // Upload the zip file to S3
+                    sh 'aws s3 cp flask-app.zip s3://flask-app-deploy-bucket/'
+                }
             }
         }
         stage('Deploy to EC2') {
             steps {
                 script {
-                    // Trigger AWS CodeDeploy to deploy the application 
-                    sh 'aws deploy create-deployment --application-name flask-app --deployment-group-name flask-deploy-group --revision file://appspec.yml'
+                    // Create a deployment in CodeDeploy
+                    sh 'aws deploy create-deployment \
+                        --application-name EC2CODE \
+                        --deployment-group-name deploy-group \
+                        --revision revisionType=S3,s3Location={bucket=flask-app-deploy-bucket,key=flask-app.zip,bundleType=zip}'
                 }
             }
         }
@@ -19,8 +41,7 @@ pipeline {
 
     post {
         always {
-            // Archive any build artifacts if needed like logs
-            archiveArtifacts artifacts: '**/build/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/flask-app.zip', allowEmptyArchive: true
         }
         success {
             echo 'Deployment successful!'
