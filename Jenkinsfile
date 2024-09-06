@@ -3,18 +3,27 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
+                // Install Python dependencies
+                sh 'pip install -r requirements.txt'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
+                // Execute the deployment script
+                sh './deploy_script.sh'
             }
+        }
+    }
+    post {
+        always {
+            // Archive any build artifacts if needed (e.g., logs)
+            archiveArtifacts artifacts: '**/build/**', allowEmptyArchive: true
+        }
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
         }
     }
 }
