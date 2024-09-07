@@ -13,7 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the repository
-                git url: 'https://your-repository-url.git', branch: 'main'
+                git url: 'https://github.com/Deeptirawat26/flask-site.git', branch: 'main'
             }
         }
         stage('Zip') {
