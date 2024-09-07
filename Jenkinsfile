@@ -1,37 +1,45 @@
 pipeline {
-    agent {
-        label 'build-node'  
+    agent any
+
+    environment {
+        AWS_CREDENTIALS_ID = 'AKIATCKASUDANOB4SKR4'
+        S3_BUCKET = 'flask-app-deploy-bucket'
+        ZIP_FILE = 'flask-site.zip'
+        CODEDEPLOY_APPLICATION_NAME = 'EC2CODE'
+        CODEDEPLOY_DEPLOYMENT_GROUP = 'deploy-group'
     }
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                sh 'pip install -r requirements.txt'
+                // Clone the repository
+                git url: 'https://your-repository-url.git', branch: 'main'
             }
         }
-        stage('Package') {
+        stage('Zip') {
             steps {
-                sh 'zip -r flask-app.zip .'
+                // Create a zip archive of the project
+                sh 'zip -r ${ZIP_FILE} .'
             }
         }
         stage('Upload to S3') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-                                  credentialsId: 'AKIATCKASUDANOB4SKR4']]) {
-                    sh 'aws s3 cp flask-app.zip s3://flask-app-deploy-bucket/'
+                // Upload the zip file to S3
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
+                    sh "aws s3 cp ${ZIP_FILE} s3://${S3_BUCKET}/"
                 }
             }
         }
-        stage('Deploy to EC2') {
+        stage('Deploy') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-                                  credentialsId: 'AKIATCKASUDANOB4SKR4']]) {
-                    sh '''
+                // Trigger CodeDeploy deployment
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
+                    sh """
                         aws deploy create-deployment \
-                        --application-name EC2CODE \
-                        --deployment-group-name deploy-group \
-                        --s3-location bucket=flask-app-deploy-bucket,key=flask-app.zip,bundleType=zip
-                    '''
+                        --application-name ${CODEDEPLOY_APPLICATION_NAME} \
+                        --deployment-group-name ${CODEDEPLOY_DEPLOYMENT_GROUP} \
+                        --s3-location bucket=${S3_BUCKET},key=${ZIP_FILE},bundleType=zip
+                    """
                 }
             }
         }
@@ -39,7 +47,8 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: '**/flask-app.zip', allowEmptyArchive: true
+            // Archive the zip file for record-keeping
+            archiveArtifacts artifacts: "${ZIP_FILE}", allowEmptyArchive: true
         }
         success {
             echo 'Deployment successful!'
